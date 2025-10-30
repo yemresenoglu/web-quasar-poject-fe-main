@@ -1,0 +1,117 @@
+
+*:focus-visible
+  outline: 2px solid var(--q-primary)
+  outline-offset: 2px
+  border-radius: 4px
+
+@media (prefers-contrast: high)
+  .q-btn, .q-card, .q-field
+    border: 2px solid var(--theme-text-primary) !important
+    
+  .q-btn
+    background: var(--theme-background) !important
+    color: var(--theme-text-primary) !important
+    
+  .q-icon
+    color: var(--theme-text-primary) !important
+
+@media (prefers-reduced-motion: reduce)
+  *
+    animation-duration: 0.01ms !important
+    animation-iteration-count: 1 !important
+    transition-duration: 0.01ms !important
+    scroll-behavior: auto !important
+
+// REMOVED: Button color overrides - Moved to component-specific CSS
+// Bu kurallar artık component dosyalarında yönetiliyor
+
+.q-field
+  .q-field__native
+    font-size: 16px !important // Prevent zoom on mobile
+    line-height: 1.5
+    
+.q-item
+  min-height: 48px // Touch target size
+  
+.q-btn
+  min-height: 44px // Touch target size
+  min-width: 44px
+  
+.q-tab
+  min-height: 48px // Touch target size
+
+.q-focusable
+  &:focus-visible
+    outline: 2px solid var(--q-primary)
+    outline-offset: 2px
+    
+.q-field--error
+  .q-field__control
+    border-color: #f44336 !important
+    
+  .q-field__messages
+    color: #f44336 !important
+    font-weight: 500
+
+.drawer-item
+  &:focus-visible
+    outline: 2px solid var(--q-primary)
+    outline-offset: -2px
+
+.q-tooltip
+  font-size: 14px !important
+  line-height: 1.4 !important
+  max-width: 200px !important
+  
+.q-dialog
+  .q-card
+    &[role="dialog"]
+      &:focus
+        outline: none // Remove default focus as dialog manages focus
+        
+.q-table
+  th
+    font-weight: 600 !important
+    
+  td, th
+    border: 1px solid var(--theme-border) !important
+    
+.q-list
+  .q-item
+    &[role="option"]
+      &[aria-selected="true"]
+        background: rgba(var(--q-primary-rgb), 0.1) !important
+        
+.q-menu
+  .q-item
+    &:focus
+      background: rgba(var(--q-primary-rgb), 0.1) !important
+
+.q-field
+  &[aria-invalid="true"]
+    .q-field__control
+      border-color: #f44336 !important
+      
+  &[aria-required="true"]
+    .q-field__label::after
+      content: " *"
+      color: #f44336
+
+@media print
+  *
+    color: black !important
+    background: white !important
+    
+  .q-btn, .q-card
+    border: 1px solid black !important
+
+@media (forced-colors: active)
+  .q-btn
+    border: 1px solid ButtonText !important
+    
+  .q-card
+    border: 1px solid CanvasText !important
+    
+  .q-field
+    .q-field__control
+      border: 1px solid CanvasText !important 

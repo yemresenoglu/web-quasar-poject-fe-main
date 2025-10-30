@@ -1,0 +1,65 @@
+{
+  "name": "quasar-project",
+  "version": "0.0.1",
+  "description": "A Quasar Project",
+  "productName": "Quasar App",
+  "author": "Yunus Emre Şenoğlu <47872150+yemresenoglu@users.noreply.github.com>",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "lint": "eslint -c ./eslint.config.js \"./src/**/*.{js,cjs,mjs,vue}\"",
+    "lint:fix": "eslint -c ./eslint.config.js \"./src/**/*.{js,cjs,mjs,vue}\" --fix",
+    "format": "prettier --write \"**/*.{js,vue,css,scss,html,md,json}\" --ignore-path .gitignore",
+    "prepare": "husky",
+    "dev": "quasar dev",
+    "build": "quasar build",
+    "postinstall": "quasar prepare"
+  },
+  "dependencies": {
+    "@fontsource/montserrat": "^5.2.8",
+    "@quasar/extras": "^1.17.0",
+    "@vueuse/integrations": "^13.5.0",
+    "axios": "^1.2.1",
+    "bootstrap-icons": "^1.13.1",
+    "chart.js": "^4.4.7",
+    "date-fns": "^4.1.0",
+    "lodash-es": "^4.17.21",
+    "quasar": "^2.16.0",
+    "uuid": "^11.1.0",
+    "vue": "^3.4.18",
+    "vue-chartjs": "^5.3.2",
+    "vue-i18n": "^9.0.0",
+    "vue-router": "^4.0.0",
+    "web-vitals": "^4.2.4"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.14.0",
+    "@intlify/unplugin-vue-i18n": "^2.0.0",
+    "@quasar/app-vite": "^2.0.0",
+    "@types/node": "^22.0.0",
+    "@vue/eslint-config-prettier": "^10.1.0",
+    "autoprefixer": "^10.4.2",
+    "eslint": "^9.14.0",
+    "eslint-plugin-vue": "^9.30.0",
+    "globals": "^15.12.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.11",
+    "postcss": "^8.4.14",
+    "prettier": "^3.3.3",
+    "vite-plugin-checker": "^0.8.0"
+  },
+  "lint-staged": {
+    "*.{js,vue}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{css,scss}": [
+      "prettier --write"
+    ]
+  },
+  "engines": {
+    "node": "^28 || ^26 || ^24 || ^22 || ^20 || ^18",
+    "npm": ">= 6.13.4",
+    "yarn": ">= 1.21.1"
+  }
+}

@@ -1,0 +1,196 @@
+
+$animation-duration-fast: 0.15s
+$animation-duration-normal: 0.3s
+$animation-duration-slow: 0.5s
+$animation-easing: cubic-bezier(0.4, 0, 0.2, 1)
+$animation-easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55)
+
+*
+  transition-property: background-color, border-color, color, opacity, transform, box-shadow
+  transition-duration: $animation-duration-fast
+  transition-timing-function: $animation-easing
+
+// REMOVED: Global button animations - Moved to component-specific CSS
+// Bu kurallar artık component dosyalarında yönetiliyor
+
+.q-card
+  transform: translateZ(0)
+  transition: transform $animation-duration-normal $animation-easing, box-shadow $animation-duration-normal $animation-easing
+  
+  &:hover
+    transform: translateY(-2px)
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15)
+
+// Taskbar Animations
+.drawer
+  .drawer-item
+    position: relative
+    overflow: hidden
+    
+    &::before
+      content: ''
+      position: absolute
+      left: 0
+      top: 0
+      width: 3px
+      height: 0
+      background: var(--q-primary)
+      transition: height $animation-duration-normal $animation-easing
+      
+    &:hover::before
+      height: 100%
+      
+    &:hover
+      background: rgba(var(--q-primary-rgb), 0.1)
+      
+    .q-icon
+      transition: transform $animation-duration-normal $animation-easing-bounce
+      
+    &:hover .q-icon
+      transform: scale(1.1)
+
+// Menu Animations
+.q-menu
+  animation: menuSlideIn $animation-duration-normal $animation-easing
+  
+@keyframes menuSlideIn
+  from
+    opacity: 0
+    transform: translateY(-10px) scale(0.95)
+  to
+    opacity: 1
+    transform: translateY(0) scale(1)
+
+// Dialog Animations
+.q-dialog
+  .q-card
+    animation: dialogZoomIn $animation-duration-normal $animation-easing
+    
+@keyframes dialogZoomIn
+  from
+    opacity: 0
+    transform: scale(0.9)
+  to
+    opacity: 1
+    transform: scale(1)
+
+// Loading Animations
+@keyframes pulse
+  0%, 100%
+    opacity: 1
+  50%
+    opacity: 0.5
+
+@keyframes bounce
+  0%, 20%, 53%, 80%, 100%
+    transform: translate3d(0, 0, 0)
+  40%, 43%
+    transform: translate3d(0, -8px, 0)
+  70%
+    transform: translate3d(0, -4px, 0)
+  90%
+    transform: translate3d(0, -2px, 0)
+
+@keyframes shake
+  0%, 100%
+    transform: translateX(0)
+  10%, 30%, 50%, 70%, 90%
+    transform: translateX(-2px)
+  20%, 40%, 60%, 80%
+    transform: translateX(2px)
+
+@keyframes fadeInUp
+  from
+    opacity: 0
+    transform: translateY(20px)
+  to
+    opacity: 1
+    transform: translateY(0)
+
+@keyframes fadeInDown
+  from
+    opacity: 0
+    transform: translateY(-20px)
+  to
+    opacity: 1
+    transform: translateY(0)
+
+@keyframes fadeInLeft
+  from
+    opacity: 0
+    transform: translateX(-20px)
+  to
+    opacity: 1
+    transform: translateX(0)
+
+@keyframes fadeInRight
+  from
+    opacity: 0
+    transform: translateX(20px)
+  to
+    opacity: 1
+    transform: translateX(0)
+
+@keyframes slideInUp
+  from
+    transform: translateY(100%)
+  to
+    transform: translateY(0)
+
+@keyframes slideInDown
+  from
+    transform: translateY(-100%)
+  to
+    transform: translateY(0)
+
+@keyframes zoomIn
+  from
+    opacity: 0
+    transform: scale(0.3)
+  to
+    opacity: 1
+    transform: scale(1)
+
+@keyframes rotate
+  from
+    transform: rotate(0deg)
+  to
+    transform: rotate(360deg)
+
+// Focus Animations
+.q-field
+  .q-field__control
+    transition: border-color $animation-duration-normal $animation-easing, box-shadow $animation-duration-normal $animation-easing
+    
+  &.q-field--focused .q-field__control
+    box-shadow: 0 0 0 2px rgba(var(--q-primary-rgb), 0.2)
+
+// Page Transitions
+.page-enter-active, .page-leave-active
+  transition: all $animation-duration-normal $animation-easing
+
+.page-enter-from
+  opacity: 0
+  transform: translateX(20px)
+
+.page-leave-to
+  opacity: 0
+  transform: translateX(-20px)
+
+// List Transitions
+.list-enter-active, .list-leave-active
+  transition: all $animation-duration-normal $animation-easing
+
+.list-enter-from, .list-leave-to
+  opacity: 0
+  transform: translateY(-10px)
+
+.list-move
+  transition: transform $animation-duration-normal $animation-easing
+
+// Reduced Motion Support
+@media (prefers-reduced-motion: reduce)
+  *
+    animation-duration: 0.01ms !important
+    animation-iteration-count: 1 !important
+    transition-duration: 0.01ms !important 

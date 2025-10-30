@@ -1,0 +1,515 @@
+<!-- eslint-disable vue/multi-word-component-names -->
+<template>
+  <q-drawer
+    :model-value="computedModelValue"
+    @update:model-value="$emit('update:modelValue', $event)"
+    :show-if-above="true"
+    :side="drawerSide"
+    class="taskbar taskbar--left"
+    :width="drawerWidth"
+    @mouseenter="handleMouseEnter"
+    @mouseleave="handleMouseLeave"
+  >
+    <div class="taskbar__section">
+      <q-list>
+        <q-item class="taskbar__item taskbar__item--logo">
+          <q-item-section avatar>
+            <div
+              class="taskbar__logo cursor-pointer"
+              @click="navigateToIndex"
+              role="button"
+              :aria-label="$t('taskbar.start')"
+              tabindex="0"
+              @keydown.enter="navigateToIndex"
+              @keydown.space.prevent="navigateToIndex"
+            >
+              <img
+                src="/src/assets/logo.png"
+                alt="SOMPO Logo"
+                width="24"
+                height="24"
+                loading="lazy"
+              />
+              <q-tooltip :anchor="tooltipAnchor" :self="tooltipSelf" :offset="tooltipOffset">
+                {{ $t('taskbar.start') }}
+              </q-tooltip>
+            </div>
+          </q-item-section>
+        </q-item>
+        <q-item class="taskbar__item taskbar__item--static">
+          <q-item-section avatar class="taskbar__icon-wrapper">
+            <i
+              class="bi bi-grid-3x3-gap cursor-pointer"
+              style="font-size: 16px"
+              @click="navigateToMenu"
+            >
+              <q-tooltip :anchor="tooltipAnchor" :self="tooltipSelf" :offset="tooltipOffset">
+                {{ $t('taskbar.menu') }}
+              </q-tooltip>
+            </i>
+            <q-badge
+              v-if="newMenuItemsCount > 0"
+              color="red"
+              floating
+              rounded
+              class="taskbar__badge"
+            >
+              {{ newMenuItemsCount }}
+            </q-badge>
+          </q-item-section>
+        </q-item>
+
+        <!-- Hasar Sorgula Arabulucu
+        <q-item class="taskbar__item taskbar__item--static">
+          <q-item-section avatar class="taskbar__icon-wrapper">
+            <i
+              class="bi bi-search cursor-pointer"
+              style="font-size: 16px"
+              @click="navigateToHasarSorgula"
+            >
+              <q-tooltip :anchor="tooltipAnchor" :self="tooltipSelf" :offset="tooltipOffset">
+                Hasar Sorgula Arabulucu
+              </q-tooltip>
+            </i>
+          </q-item-section>
+        </q-item>
+        -->
+        <!-- Hasar Dosya Arabulucu
+        <q-item class="taskbar__item taskbar__item--static">
+          <q-item-section avatar class="taskbar__icon-wrapper">
+            <i
+              class="bi bi-file-earmark-text cursor-pointer"
+              style="font-size: 16px"
+              @click="navigateToHasarDosya"
+            >
+              <q-tooltip :anchor="tooltipAnchor" :self="tooltipSelf" :offset="tooltipOffset">
+                Hasar Dosya Arabulucu
+              </q-tooltip>
+            </i>
+          </q-item-section>
+        </q-item>
+        -->
+        <q-item
+          v-for="pinnedItem in pinnedQuickAccessItems"
+          :key="pinnedItem.id"
+          class="taskbar__item taskbar__item--static"
+        >
+          <q-item-section avatar>
+            <i
+              :class="pinnedItem.icon"
+              style="font-size: 16px"
+              class="cursor-pointer"
+              @click="navigateToRoute(pinnedItem)"
+            >
+              <q-tooltip :anchor="tooltipAnchor" :self="tooltipSelf" :offset="tooltipOffset">
+                {{ pinnedItem.text }}
+              </q-tooltip>
+            </i>
+          </q-item-section>
+        </q-item>
+      </q-list>
+    </div>
+
+    <q-separator spaced="sm" inset class="taskbar__separator" />
+
+    <div class="taskbar__section taskbar__section--grow"></div>
+
+    <div class="taskbar__section">
+      <q-list>
+        <q-item class="taskbar__item taskbar__item--avatar">
+          <q-item-section avatar>
+            <div
+              class="taskbar__avatar-wrapper cursor-pointer"
+              role="button"
+              :aria-label="$t('taskbar.account')"
+              tabindex="0"
+            >
+              <q-avatar v-if="userProfile.avatar" size="24px" class="taskbar__avatar">
+                <img
+                  :src="userProfile.avatar"
+                  :alt="userProfile.firstName"
+                  width="24"
+                  height="24"
+                  loading="lazy"
+                />
+              </q-avatar>
+              <i
+                v-else
+                class="bi bi-person-circle taskbar__avatar-icon"
+                style="font-size: 24px"
+              ></i>
+              <q-tooltip :anchor="tooltipAnchor" :self="tooltipSelf" :offset="tooltipOffset">
+                {{ $t('taskbar.account') }}
+              </q-tooltip>
+              <AccountMenu />
+            </div>
+          </q-item-section>
+        </q-item>
+      </q-list>
+    </div>
+  </q-drawer>
+</template>
+
+<script setup>
+import { defineAsyncComponent, computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
+// Store imports removed - using local state instead
+
+const AccountMenu = defineAsyncComponent(() => import('./account/AccountMenu.vue'))
+
+const router = useRouter()
+// Store instances removed - using local state instead
+
+const props = defineProps({
+  modelValue: {
+    type: Boolean,
+    required: true,
+  },
+  taskbarSettings: {
+    type: Object,
+    default: () => ({
+      autoHide: true,
+    }),
+  },
+})
+
+defineEmits(['update:modelValue'])
+
+// Local state for taskbar
+const isHovered = ref(false)
+const taskbarSettings = ref({
+  position: 'left',
+  autoHide: true,
+  showTaskbar: true,
+})
+const userProfile = ref({
+  firstName: '',
+  lastName: '',
+  avatar: null,
+})
+const pinnedQuickAccessItems = ref([])
+// isVertical removed - always showing taskbar
+
+// New menu items count for notification badge - empty data
+const newMenuItemsCount = computed(() => {
+  // Empty data - backend integration ready
+  return 0
+})
+
+const computedModelValue = computed(() => {
+  if (taskbarSettings.value.autoHide) {
+    return isHovered.value || props.modelValue
+  }
+  return props.modelValue
+})
+
+const drawerSide = computed(() => 'left')
+const drawerWidth = computed(() => 48)
+const tooltipAnchor = computed(() => 'center right')
+const tooltipSelf = computed(() => 'center left')
+const tooltipOffset = computed(() => [16, 0])
+
+const handleMouseEnter = () => {
+  if (taskbarSettings.value.autoHide) {
+    isHovered.value = true
+  }
+}
+
+const handleMouseLeave = () => {
+  if (taskbarSettings.value.autoHide) {
+    isHovered.value = false
+  }
+}
+
+const navigateToIndex = () => {
+  router.push('/home')
+}
+
+const navigateToMenu = () => {
+  router.push('/home/menu')
+}
+
+const navigateToHasarSorgula = () => {
+  router.push('/menu/hasar-sorgula-arabulucu')
+}
+
+const navigateToHasarDosya = () => {
+  router.push('/menu/hasar-dosya-arabulucu')
+}
+
+const navigateToRoute = (item) => {
+  if (!item.route) return
+  router.push(item.route)
+}
+</script>
+
+<style lang="scss">
+@import 'src/css/quasar.variables.scss';
+
+// Global tooltip styling
+.q-tooltip {
+  background: $background-light !important;
+  color: $text-secondary !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  padding: 6px 12px !important;
+  border-radius: 8px !important;
+  border: 1px solid $border-light !important;
+  box-shadow: 0 2px 4px rgba(100, 116, 139, 0.15) !important;
+  letter-spacing: 0.3px !important;
+  max-width: 300px !important;
+}
+
+// BEM: Block - taskbar (Optimized with BEM mixins)
+@include bem-block('taskbar') {
+  background-color: $background-card !important;
+  display: flex;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border-radius: 18px !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  box-shadow: none !important;
+
+  // Dark mode theme transition
+  .body--dark & {
+    background-color: #1f2937 !important;
+    border-color: #374151 !important;
+  }
+
+  // BEM: Modifier - left position
+  @include bem-modifier('left') {
+    flex-direction: column;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    margin-left: 8px !important;
+    height: calc(100vh - 16px) !important;
+  }
+
+  // BEM: Element - section
+  @include bem-element('section') {
+    padding: 8px 0;
+
+    // BEM: Modifier - growable section
+    @include bem-modifier('grow') {
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+
+    .q-list {
+      padding: 0;
+    }
+  }
+
+  // BEM: Element - separator
+  @include bem-element('separator') {
+    margin: 8px;
+    opacity: 0.3;
+    background: $border-lighter;
+  }
+
+  // BEM: Element - item
+  @include bem-element('item') {
+    min-height: 32px;
+    padding: 4px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    color: $text-secondary;
+    // Using mixin for consistent hover behavior
+    @include component-states(transparent, $background-hover, $background-light);
+
+    .q-item__section--avatar {
+      min-width: unset;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    // BEM: Modifier - logo item
+    @include bem-modifier('logo') {
+      cursor: pointer;
+
+      .q-item__section--avatar {
+        width: 32px;
+        height: 32px;
+      }
+    }
+
+    // BEM: Modifier - static item (menu/pinned)
+    @include bem-modifier('static') {
+      .q-item__section--avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 2px;
+        transition: all 0.2s ease;
+        cursor: pointer;
+
+        .q-icon {
+          width: 24px;
+          height: 24px;
+          border-radius: 2px;
+          font-size: 14px;
+          color: $text-secondary;
+          opacity: 0.87;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          transition:
+            opacity 0.2s ease,
+            color 0.2s ease;
+        }
+      }
+
+      &:hover {
+        background: $background-light;
+        border-left: 2px solid $border-accent;
+
+        .q-item__section--avatar .q-icon {
+          opacity: 1;
+        }
+      }
+    }
+
+    // BEM: Modifier - avatar item (logo ile aynı)
+    @include bem-modifier('avatar') {
+      cursor: pointer;
+
+      .q-item__section--avatar {
+        width: 32px;
+        height: 32px;
+      }
+    }
+  }
+
+  // BEM: Element - logo
+  @include bem-element('logo') {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+
+    img {
+      object-fit: contain;
+      filter: grayscale(20%) opacity(0.87);
+      transition: all 0.2s ease;
+    }
+
+    &:hover img {
+      filter: grayscale(0%) opacity(1);
+      transform: scale(1.15) !important;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $border-accent;
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+  }
+
+  // BEM: Element - avatar wrapper (logo ile birebir aynı)
+  @include bem-element('avatar-wrapper') {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s ease !important;
+    width: 24px !important;
+    height: 24px !important;
+
+    // Quasar q-avatar override - daha spesifik
+    .q-avatar.taskbar__avatar {
+      border: 2px solid rgba(0, 0, 0, 0.1) !important;
+      transition: all 0.2s ease !important;
+      width: 24px !important;
+      height: 24px !important;
+      min-width: 24px !important;
+      min-height: 24px !important;
+
+      img {
+        object-fit: contain !important;
+        filter: grayscale(20%) opacity(0.87) !important;
+        transition: all 0.2s ease !important;
+        width: 24px !important;
+        height: 24px !important;
+        transform: none !important;
+      }
+    }
+
+    // Icon fallback
+    .q-icon.taskbar__avatar-icon {
+      color: $text-secondary !important;
+      opacity: 0.87 !important;
+      transition: all 0.2s ease !important;
+      width: 24px !important;
+      height: 24px !important;
+      font-size: 24px !important;
+    }
+
+    // Hover state - wrapper'a uygulanıyor (logo ile aynı)
+    &:hover {
+      .q-avatar.taskbar__avatar {
+        transform: scale(1.15) !important;
+
+        img {
+          filter: grayscale(0%) opacity(1) !important;
+          transform: scale(1.15) !important;
+        }
+      }
+
+      .q-icon.taskbar__avatar-icon {
+        opacity: 1 !important;
+        transform: scale(1.15) !important;
+      }
+    }
+
+    &:focus-visible {
+      outline: 2px solid $border-accent !important;
+      outline-offset: 2px !important;
+      border-radius: 4px !important;
+    }
+  }
+
+  // BEM: Element - avatar (Quasar component için - yedek)
+  @include bem-element('avatar') {
+    border: 2px solid rgba(0, 0, 0, 0.1) !important;
+    transition: all 0.2s ease !important;
+    width: 24px !important;
+    height: 24px !important;
+
+    img {
+      object-fit: contain !important;
+      filter: grayscale(20%) opacity(0.87) !important;
+      transition: all 0.2s ease !important;
+      width: 24px !important;
+      height: 24px !important;
+    }
+  }
+
+  // BEM: Element - avatar icon (fallback - yedek)
+  @include bem-element('avatar-icon') {
+    color: $text-secondary !important;
+    opacity: 0.87 !important;
+    transition: all 0.2s ease !important;
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 24px !important;
+  }
+
+  // BEM: Element - icon wrapper (for badge)
+  @include bem-element('icon-wrapper') {
+    position: relative;
+  }
+
+  // BEM: Element - notification badge
+  @include bem-element('badge') {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 16px;
+    min-height: 16px;
+    font-size: 10px;
+    padding: 2px 4px;
+    z-index: 1;
+  }
+}
+</style>

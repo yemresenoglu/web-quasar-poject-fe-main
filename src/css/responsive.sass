@@ -1,0 +1,215 @@
+// Responsive Design System
+// Mobile-first approach with breakpoints
+
+// Breakpoints
+$mobile: 480px
+$tablet: 768px
+$tablet-large: 1024px
+$desktop: 1024px
+$large: 1440px
+
+// Mixins for responsive design
+@mixin mobile
+  @media (max-width: #{$mobile - 1px})
+    @content
+
+@mixin tablet
+  @media (min-width: #{$mobile}) and (max-width: #{$tablet - 1px})
+    @content
+
+@mixin tablet-large
+  @media (min-width: #{$tablet}) and (max-width: #{$tablet-large - 1px})
+    @content
+
+@mixin desktop
+  @media (min-width: #{$tablet-large})
+    @content
+
+@mixin large
+  @media (min-width: #{$large})
+    @content
+
+// Utility mixin for tablet range (768px-1024px)
+@mixin tablet-range
+  @media (min-width: #{$tablet}) and (max-width: #{$tablet-large - 1px})
+    @content
+
+// Layout Responsive Rules
+.q-layout
+  @include mobile
+    .q-drawer
+      width: 100% !important
+      max-width: 280px
+      
+
+// Taskbar Responsive  
+.drawer
+  @include mobile
+    width: 280px !important
+    
+  @include tablet
+    width: 56px !important
+    
+  &__section
+    @include mobile
+      padding: 8px 16px
+      
+  .drawer-item
+    @include mobile
+      padding: 8px 12px
+      
+      .q-item-section
+        min-width: auto
+
+
+// Content Responsive
+.content-view
+  @include mobile
+    padding: 8px
+    
+  @include tablet
+    padding: 12px
+    
+  @include desktop
+    padding: 16px
+
+// Cards Responsive
+.q-card
+  @include mobile
+    margin: 8px 0
+    border-radius: 12px
+    
+  @include tablet
+    margin: 12px 0
+    border-radius: 16px
+    
+  @include desktop
+    margin: 16px 0
+    border-radius: 18px
+
+// Tables Responsive
+.q-table
+  @include mobile
+    .q-table__container
+      max-width: calc(100vw - 32px)
+      
+    .q-table__middle
+      max-width: 100%
+      overflow-x: auto
+      
+    th, td
+      padding: 8px 4px !important
+      font-size: 12px !important
+      
+    .q-table__bottom
+      flex-direction: column
+      gap: 8px
+      
+      .q-table__control
+        justify-content: center
+
+// Forms Responsive
+.q-field
+  @include mobile
+    margin-bottom: 12px
+    
+    .q-field__control
+      min-height: 44px // Touch-friendly height
+      
+    .q-field__native
+      font-size: 16px // Prevent zoom on iOS
+      
+  @include tablet
+    margin-bottom: 16px
+
+// REMOVED: Global button responsive rules - Moved to component-specific CSS
+// Bu kurallar artık component dosyalarında yönetiliyor
+
+// Dialog Responsive
+.q-dialog
+  @include mobile
+    .q-dialog__inner
+      padding: 16px
+      
+    .q-card
+      width: calc(100vw - 32px) !important
+      max-width: none !important
+      margin: 0
+      border-radius: 16px
+
+// Tooltips Responsive
+.q-tooltip
+  @include mobile
+    display: none !important // Hide tooltips on mobile
+
+// REMOVED: Global touch-friendly button rules - Moved to component-specific CSS
+// Bu kurallar artık component dosyalarında yönetiliyor
+
+// High DPI displays
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)
+  .q-icon
+    image-rendering: -webkit-optimize-contrast
+    image-rendering: crisp-edges
+    
+  img
+    image-rendering: -webkit-optimize-contrast
+    image-rendering: crisp-edges
+
+// Touch target optimization for touch devices (WCAG 2.1 Level AAA: min 44px)
+@media (pointer: coarse)
+  .menu-item
+    min-height: 44px !important
+    padding: 8px !important
+  
+  .drawer-item
+    min-height: 44px !important
+    
+  .q-btn
+    min-height: 44px !important
+    min-width: 44px !important
+  
+  .account-menu__item
+    min-height: 44px !important
+  
+  .q-item
+    min-height: 44px !important
+
+// Tablet-specific optimizations (768px-1024px)
+@media (min-width: 768px) and (max-width: 1023px)
+  // IndexPage Dashboard
+  .index-page
+    .row .col-md-8
+      width: 100% !important
+    
+    .row .col-md-4
+      width: 100% !important
+    
+    .index-page__job-status-grid
+      grid-template-columns: repeat(2, 1fr) !important
+  
+  // MenuPage
+  .menu-container
+    grid-template-columns: repeat(2, 1fr) !important
+  
+  // Process stats
+  .process-stat__numbers
+    flex-direction: row !important
+    justify-content: space-around
+  
+  // Announcements
+  .announcements
+    max-width: 600px
+    margin: 0 auto
+
+// Print styles
+@media print
+  .header, .drawer, .q-fab, .q-page-sticky
+    display: none !important
+    
+  .q-page
+    margin: 0 !important
+    padding: 0 !important
+    
+  .q-card
+    box-shadow: none !important
+    border: 1px solid #ccc !important 

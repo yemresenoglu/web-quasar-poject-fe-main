@@ -1,0 +1,448 @@
+<template>
+  <q-page class="account-edit-profile">
+    <!-- Page Header -->
+    <div class="account-edit-profile__header">
+      <div class="account-edit-profile__header-content">
+        <q-btn
+          flat
+          round
+          dense
+          icon="bi-arrow-left"
+          class="account-edit-profile__back-btn"
+          @click="goBack"
+          :aria-label="$t('common.back')"
+        />
+        <div class="account-edit-profile__title">{{ $t('account.editProfile') }}</div>
+        <div class="account-edit-profile__spacer"></div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="account-edit-profile__container">
+      <!-- Profile Section -->
+      <div class="account-edit-profile__section">
+         <div class="account-edit-profile__section-header">
+           <i class="bi bi-person account-edit-profile__section-icon" style="font-size: 16px;"></i>
+           <div class="account-edit-profile__section-title">{{ $t('account.profileInfo') }}</div>
+         </div>
+        
+        <q-form @submit.prevent="saveProfile" class="account-edit-profile__form">
+          <div class="account-edit-profile__form-grid">
+            <div class="form-group">
+              <label>{{ $t('account.firstName') }}</label>
+              <q-input
+                v-model="profileForm.firstName"
+                outlined
+                dense
+                borderless
+                class="search-input"
+              />
+            </div>
+            
+            <div class="form-group">
+              <label>{{ $t('account.lastName') }}</label>
+              <q-input
+                v-model="profileForm.lastName"
+                outlined
+                dense
+                borderless
+                class="search-input"
+              />
+            </div>
+            
+            <div class="form-group">
+              <label>{{ $t('account.userCode') }}</label>
+              <q-input
+                v-model="profileForm.userCode"
+                outlined
+                dense
+                borderless
+                class="search-input"
+              />
+            </div>
+            
+            <div class="form-group">
+              <label>{{ $t('account.email') }}</label>
+              <q-input
+                v-model="profileForm.email"
+                outlined
+                dense
+                borderless
+                type="email"
+                class="search-input"
+              />
+            </div>
+          </div>
+          
+          <div class="search-form-actions">
+            <q-btn
+              color="primary"
+              :label="$t('common.save')"
+              icon="bi-floppy"
+              @click="saveProfile"
+              :loading="loadingStates.profile"
+              class="search-btn"
+            />
+            <q-btn
+              color="primary"
+              :label="$t('common.cancel')"
+              icon="bi-x-lg"
+              @click="goBack"
+              class="clear-btn"
+            />
+          </div>
+        </q-form>
+      </div>
+
+    </div>
+  </q-page>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useQuasar } from 'quasar'
+import { useI18n } from 'vue-i18n'
+// Store imports removed - using local state instead
+import { createLogger } from 'src/utils/logger.js'
+
+const logger = createLogger('AccountEditProfile')
+const router = useRouter()
+const $q = useQuasar()
+const { t: $t } = useI18n()
+
+// Store instance removed - using local state instead
+
+// Loading states
+const loadingStates = ref({
+  profile: false
+})
+
+// Profile form
+const profileForm = ref({
+  firstName: '',
+  lastName: '',
+  userCode: '',
+  email: ''
+})
+
+// Local user profile data - empty data for backend integration
+const userProfile = ref({
+  firstName: '',
+  lastName: '',
+  userCode: '',
+  email: ''
+})
+
+// Validasyon kuralları kaldırıldı - artık validasyon yapılmıyor
+
+/**
+ * Sets the profile form values from the current user profile
+ * @returns {void}
+ */
+const setProfileFormValues = () => {
+  profileForm.value.firstName = userProfile.value.firstName
+  profileForm.value.lastName = userProfile.value.lastName
+  profileForm.value.userCode = userProfile.value.userCode
+  profileForm.value.email = userProfile.value.email
+}
+
+/**
+ * Saves the profile form data with loading state management
+ * @returns {Promise<void>}
+ */
+const saveProfile = async () => {
+  loadingStates.value.profile = true
+  try {
+    logger.info('Profile update initiated - backend integration ready')
+    // Update local user profile (backend integration ready)
+    userProfile.value = { ...profileForm.value }
+    $q.notify({
+      type: 'positive',
+      message: $t('account.profileUpdatedSuccessfully'),
+      icon: '✓',
+      position: 'top-right'
+    })
+    logger.info('Profile updated successfully - local only')
+  } catch (error) {
+    logger.error('Profile update failed:', error)
+    $q.notify({
+      type: 'negative',
+      message: $t('account.profileUpdateFailed'),
+      icon: '✕',
+      position: 'top-right'
+    })
+  } finally {
+    loadingStates.value.profile = false
+  }
+}
+
+/**
+ * Navigates back to the previous page
+ * @returns {void}
+ */
+const goBack = () => {
+  router.go(-1)
+}
+
+// Lifecycle
+onMounted(() => {
+  setProfileFormValues()
+})
+</script>
+
+<style lang="scss">
+@use "sass:color";
+@import 'src/css/quasar.variables.scss';
+
+.account-edit-profile {
+  min-height: 100vh;
+  background: $background-page;
+  padding: 16px;
+
+  &__header {
+    margin-bottom: 16px;
+  }
+
+  &__header-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 8px 0;
+  }
+
+  &__back-btn {
+    min-height: 32px;
+    min-width: 32px;
+    border-radius: 4px;
+    color: $text-secondary;
+    opacity: 0.87;
+    transition: all 0.2s ease;
+    
+    // Dark mode theme transition
+    .body--dark & {
+      color: #d1d5db;
+    }
+
+    &:hover {
+      background: $background-light;
+      opacity: 1;
+    }
+  }
+
+  &__title {
+    font-size: 18px;
+    font-weight: 600;
+    color: $text-secondary;
+    text-transform: none;
+  }
+
+  &__spacer {
+    flex: 1;
+  }
+
+  &__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  &__section {
+    background: $background-card;
+    border-radius: 18px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+    
+    &:hover {
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+  }
+
+  &__section-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid $border-lighter;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 56px;
+  }
+
+  &__section-icon {
+    color: $text-secondary;
+    font-size: 16px;
+  }
+
+  &__section-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: $text-secondary;
+    text-transform: none;
+  }
+
+  &__form {
+    padding: 20px;
+  }
+
+  &__form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+  }
+
+  // Form Group - Label stilleri artık global CSS'de tanımlı
+
+  // Search Input - Diğer component'lerle aynı stil
+  .search-input {
+    :deep(.q-field__control) {
+      min-height: 26px !important;
+      height: 26px !important;
+      font-size: 12px;
+      background: $background-light !important;
+      border: none !important;
+      border-radius: 3px;
+      transition: all 0.2s ease;
+
+      &:before,
+      &:after {
+        border: none !important;
+      }
+
+      &:hover {
+        background: color.adjust($background-light, $lightness: -2%) !important;
+        box-shadow: $box-shadow-input-hover;
+      }
+      
+      &:focus-within {
+        background: white !important;
+        box-shadow: 0 0 0 2px rgba($border-accent, 0.15);
+      }
+    }
+    
+    :deep(.q-field__native) {
+      padding: 6px 10px !important;
+      min-height: 26px !important;
+      height: 26px !important;
+      line-height: 14px !important;
+      color: $text-primary !important;
+      font-size: 12px !important;
+      font-weight: 500 !important;
+      display: flex !important;
+      align-items: center !important;
+      
+      // Placeholder styling
+      &::placeholder {
+        color: $text-muted !important;
+        opacity: 0.8 !important;
+        font-size: 11px !important;
+        font-weight: 500 !important;
+        line-height: 14px !important;
+      }
+    }
+    
+    :deep(.q-field__append) {
+      padding-right: 4px;
+      height: 26px !important;
+      display: flex !important;
+      align-items: center !important;
+    }
+  }
+
+  // Search form actions (buttons)
+  .search-form-actions {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 12px;
+    padding-top: 8px;
+    border-top: 1px solid $border-lighter;
+  }
+
+  // 🔧 Save Button (KAYDET)
+  .search-btn {
+    width: 130px !important;
+    min-width: 130px !important;
+    max-width: 130px !important;
+    height: 26px !important;
+    min-height: 26px !important;
+    background: $background-button !important;
+    padding: 2px 6px !important;
+    border-radius: 2px !important;
+    font-weight: 600 !important;
+    font-size: 9px !important;
+    color: $text-secondary !important;
+    border-left: 2px solid $border-accent !important;
+    letter-spacing: 0.3px !important;
+    line-height: 1.1 !important;
+    text-transform: uppercase !important;
+    
+    // Icon styling
+    :deep(.q-icon) {
+      font-size: 9px !important;
+      margin-right: 4px !important;
+      color: $text-secondary !important;
+      opacity: 1 !important;
+    }
+    
+    // Loading state
+    &.q-btn--loading {
+      :deep(.q-icon) {
+        font-size: 9px !important;
+        color: $text-secondary !important;
+      }
+    }
+  }
+
+  // 🔧 Cancel Button (İPTAL)
+  .clear-btn {
+    width: 130px !important;
+    min-width: 130px !important;
+    max-width: 130px !important;
+    height: 26px !important;
+    min-height: 26px !important;
+    background: $background-button !important;
+    padding: 2px 6px !important;
+    border-radius: 2px !important;
+    font-weight: 600 !important;
+    font-size: 9px !important;
+    color: $text-secondary !important;
+    border: none !important;
+    border-top: none !important;
+    border-right: none !important;
+    border-bottom: none !important;
+    border-left: 2px solid $border-accent !important;
+    letter-spacing: 0.3px !important;
+    line-height: 1.1 !important;
+    text-transform: uppercase !important;
+    
+    // Icon styling
+    :deep(.q-icon) {
+      font-size: 9px !important;
+      margin-right: 4px !important;
+      color: $text-secondary !important;
+      opacity: 1 !important;
+    }
+    
+    // Hover/Focus states
+    &:hover, &:focus, &:active {
+      border: none !important;
+      border-top: none !important;
+      border-right: none !important;
+      border-bottom: none !important;
+      border-left: 2px solid $border-accent !important;
+    }
+  }
+
+}
+</style>

@@ -5,7 +5,7 @@ import {
   createWebHistory,
   createWebHashHistory,
 } from 'vue-router'
-import routes from './routes'
+import routes from './routes.js'
 import { i18n } from 'src/boot/i18n'
 
 /*
@@ -17,7 +17,7 @@ import { i18n } from 'src/boot/i18n'
  * with the Router instance.
  */
 
-export default defineRouter(function (/* { store, ssrContext } */) {
+export default defineRouter((/* { store, ssrContext } */) => {
   const createHistory = process.env.SERVER
     ? createMemoryHistory
     : process.env.VUE_ROUTER_MODE === 'history'
@@ -34,10 +34,9 @@ export default defineRouter(function (/* { store, ssrContext } */) {
     history: createHistory(process.env.VUE_ROUTER_BASE),
   })
 
-
   // Update document title on route change
-  Router.afterEach((to) => {
-    const baseTitle = 'SOMPO Sigorta'
+  Router.afterEach(to => {
+    const baseTitle = 'SOMPO Harici Avukat ve Arabulucu Uygulaması'
 
     // Get titleKey from route meta
     const titleKey = to.meta?.titleKey

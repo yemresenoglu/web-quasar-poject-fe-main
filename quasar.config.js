@@ -1,123 +1,118 @@
 // Configuration for your app
-// https://v2.quasar.dev/quasar-cli-vite/quasar-config-file
+// https://v2.quasar.dev/quasar-cli-webpack/quasar-config-file
+// Vue 3 + Quasar 2 + JavaScript
 
-import { defineConfig } from '#q-app/wrappers'
-import { fileURLToPath } from 'node:url'
+import { configure } from 'quasar/wrappers'
+import path from 'path'
+import { fileURLToPath } from 'url'
+import webpack from 'webpack'
 
-export default defineConfig((ctx) => {
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+
+export default configure(ctx => {
   return {
-    // https://v2.quasar.dev/quasar-cli-vite/prefetch-feature
-    // preFetch: true,
-
-    // app boot file (/src/boot)
-    // --> boot files are part of "main.js"
-    // https://v2.quasar.dev/quasar-cli-vite/boot-files
-    boot: ['i18n'],
-
-    // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#css
+    boot: ['i18n', 'fonts'],
     css: ['app.sass'],
 
-    // https://github.com/quasarframework/quasar/tree/dev/extras
-    extras: [
-      // 'ionicons-v4',
-      // 'mdi-v7',
-      // 'fontawesome-v6',
-      // 'eva-icons',
-      // 'themify',
-      // 'line-awesome',
-      // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
+    extras: ['material-icons'],
 
-      // 'roboto-font', // Removed - Using Montserrat via @fontsource (src/css/fonts.scss)
-      'material-icons', // Material Icons (Quasar notifications için gerekli)
-      'material-icons-outlined', // Material Icons Outlined (alternatif)
-      'material-icons-round', // Material Icons Round (alternatif)
-    ],
-
-    // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#build
     build: {
       target: {
         browser: ['es2022', 'firefox115', 'chrome115', 'safari14'],
         node: 'node20',
       },
 
-      vueRouterMode: 'history', // available values: 'hash', 'history'
-      // vueRouterBase,
-      // vueDevtools,
-      // vueOptionsAPI: false,
+      vueRouterMode: 'history',
 
-      // rebuildCache: true, // rebuilds Vite/linter/etc cache on startup
+      minify: ctx.prod ? 'terser' : false,
+      sourcemap: ctx.dev,
 
-      // publicPath: '/',
-      // analyze: true,
-      // env: {},
-      // rawDefine: {}
-      // ignorePublicFolder: true,
-      // minify: false,
-      // polyfillModulePreload: true,
-      // distDir
-
-      // extendViteConf (viteConf) {},
-      viteVuePluginOptions: {},
-
-      vitePlugins: [
-        [
-          '@intlify/unplugin-vue-i18n/vite',
-          {
-            // if you want to use Vue I18n Legacy API, you need to set `compositionOnly: false`
-            // compositionOnly: false,
-
-            // if you want to use named tokens in your Vue I18n messages, such as 'Hello {name}',
-            // you need to set `runtimeOnly: false`
-            // runtimeOnly: false,
-
-            ssr: ctx.modeName === 'ssr',
-
-            // you need to set i18n resource including paths !
-            include: [
-              fileURLToPath(new URL('./src/i18n/**/*.js', import.meta.url)),
-              fileURLToPath(new URL('./src/i18n/**/*.json', import.meta.url)),
-            ],
+      extendWebpack(cfg) {
+        // ES modules için resolve ayarları
+        cfg.resolve = {
+          ...cfg.resolve,
+          extensionAlias: {
+            '.js': ['.js', '.mjs'],
           },
-        ],
+        }
 
-        // ['vite-plugin-checker', {
-        //   eslint: {
-        //     lintCommand: 'eslint -c ./eslint.config.js "./src*/**/*.{js,mjs,cjs,vue}"',
-        //     useFlatConfig: true
-        //   }
-        // }, { server: false }]
-      ],
+        // process.env için DefinePlugin (browser'da process tanımlı değil)
+        // Not: Quasar otomatik olarak .env dosyasındaki VUE_APP_* değişkenlerini yükler
+        // Bu yüzden sadece özel değişkenleri burada tanımlıyoruz
+        cfg.plugins.push(
+          new webpack.DefinePlugin({
+            'process.env.NODE_ENV': JSON.stringify(
+              process.env.NODE_ENV || (ctx.dev ? 'development' : 'production')
+            ),
+            'process.env.VUE_ROUTER_MODE': JSON.stringify('history'),
+            'process.env.VUE_ROUTER_BASE': JSON.stringify('/'),
+            'process.env.SERVER': JSON.stringify(false),
+          })
+        )
+
+        // Production için code splitting (Vue 3 + Quasar 2)
+        if (ctx.prod) {
+          cfg.optimization = {
+            ...cfg.optimization,
+            splitChunks: {
+              chunks: 'all',
+              maxInitialRequests: Infinity,
+              minSize: 0,
+              cacheGroups: {
+                vendor: {
+                  test: /[\\/]node_modules[\\/](vue|vue-router|vue-i18n)[\\/]/,
+                  name: 'vendor',
+                  priority: 20,
+                },
+                quasar: {
+                  test: /[\\/]node_modules[\\/]quasar[\\/]/,
+                  name: 'quasar',
+                  priority: 15,
+                },
+                charts: {
+                  test: /[\\/]node_modules[\\/](chart\.js|vue-chartjs)[\\/]/,
+                  name: 'charts',
+                  priority: 10,
+                },
+                utils: {
+                  test: /[\\/]node_modules[\\/](axios|date-fns|lodash-es|uuid)[\\/]/,
+                  name: 'utils',
+                  priority: 5,
+                },
+              },
+            },
+          }
+
+          // Chunk size warning limit
+          cfg.performance = {
+            ...cfg.performance,
+            maxEntrypointSize: 1000000,
+            maxAssetSize: 1000000,
+          }
+        }
+      },
     },
 
-    // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#devserver
     devServer: {
-      // https: true,
       port: 8086,
-      open: true, // opens browser window automatically
+      open: true,
+      https: false,
+      headers: {
+        'X-Content-Type-Options': 'nosniff',
+        'X-Frame-Options': 'DENY',
+        'X-XSS-Protection': '1; mode=block',
+      },
     },
 
-    // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#framework
     framework: {
       config: {},
-
-      iconSet: 'material-icons', // Quasar bileşenleri için varsayılan (projede Bootstrap Icons kullanılıyor)
-      lang: 'tr', // Quasar language pack (Turkish)
-
-      // For special cases outside of where the auto-import strategy can have an impact
-      // (like functional components as one of the examples),
-      // you can manually specify Quasar components/directives to be available everywhere:
-      //
-      // components: [],
-      // directives: [],
-
-      // Quasar plugins
+      iconSet: 'material-icons',
+      lang: 'tr',
       plugins: ['Notify', 'Dialog', 'Dark', 'LocalStorage'],
     },
 
-    // https://v2.quasar.dev/options/animations
     animations: [],
 
-    // https://v2.quasar.dev/quasar-cli-vite/developing-pwa/configuring-pwa
     pwa: {
       workboxMode: 'generateSW',
       injectPwaMetaTags: true,
@@ -125,9 +120,8 @@ export default defineConfig((ctx) => {
       manifestFilename: 'manifest.json',
       useCredentialsForManifestTag: false,
 
-      // PWA Manifest
       manifest: {
-        name: 'SOMPO Hasar Operasyon',
+        name: 'SOMPO Harici Avukat ve Arabulucu Uygulaması',
         short_name: 'SOMPO',
         description: 'Hasar Yönetim Sistemi - Arabuluculuk ve Hasar Dosya Yönetimi',
         display: 'standalone',
@@ -165,12 +159,10 @@ export default defineConfig((ctx) => {
         ],
       },
 
-      // Workbox options
       workboxOptions: {
         skipWaiting: true,
         clientsClaim: true,
-
-        // Cache strategies
+        cleanupOutdatedCaches: true,
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,

@@ -1,19 +1,43 @@
 {
-  "name": "quasar-project",
+  "name": "sompo-hasar-operasyon",
   "version": "0.0.1",
-  "description": "A Quasar Project",
-  "productName": "Quasar App",
+  "description": "Hasar Yönetim Sistemi - Arabuluculuk ve Hasar Dosya Yönetimi",
+  "productName": "SOMPO Harici Avukat ve Arabulucu Uygulaması",
   "author": "Yunus Emre Şenoğlu <47872150+yemresenoglu@users.noreply.github.com>",
+  "license": "UNLICENSED",
   "type": "module",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yemresenoglu/web-quasar-poject-fe-main.git"
+  },
+  "keywords": [
+    "quasar",
+    "vue3",
+    "insurance",
+    "damage-management",
+    "mediation",
+    "lawyer",
+    "sompo"
+  ],
   "scripts": {
+    "dev": "quasar dev",
+    "build": "quasar build",
+    "build:beta": "powershell -Command \"if (Test-Path .env) { Copy-Item .env .env.backup -Force }; Copy-Item .env.beta .env -Force; quasar build; if (Test-Path .env.backup) { Copy-Item .env.backup .env -Force; Remove-Item .env.backup -Force } else { if (Test-Path .env.development) { Copy-Item .env.development .env -Force } }\"",
+    "build:preprod": "powershell -Command \"if (Test-Path .env) { Copy-Item .env .env.backup -Force }; Copy-Item .env.preprod .env -Force; quasar build; if (Test-Path .env.backup) { Copy-Item .env.backup .env -Force; Remove-Item .env.backup -Force } else { if (Test-Path .env.development) { Copy-Item .env.development .env -Force } }\"",
+    "build:prod": "powershell -Command \"if (Test-Path .env) { Copy-Item .env .env.backup -Force }; Copy-Item .env.production .env -Force; quasar build; if (Test-Path .env.backup) { Copy-Item .env.backup .env -Force; Remove-Item .env.backup -Force } else { if (Test-Path .env.development) { Copy-Item .env.development .env -Force } }\"",
+    "build:pwa": "quasar build -m pwa",
     "lint": "eslint -c ./eslint.config.js \"./src/**/*.{js,cjs,mjs,vue}\"",
     "lint:fix": "eslint -c ./eslint.config.js \"./src/**/*.{js,cjs,mjs,vue}\" --fix",
     "format": "prettier --write \"**/*.{js,vue,css,scss,html,md,json}\" --ignore-path .gitignore",
+    "format:check": "prettier --check \"**/*.{js,vue,css,scss,html,md,json}\" --ignore-path .gitignore",
     "prepare": "husky",
-    "dev": "quasar dev",
-    "build": "quasar build",
-    "postinstall": "quasar prepare"
+    "postinstall": "quasar prepare",
+    "audit": "npm audit",
+    "audit:fix": "npm audit fix",
+    "outdated": "npm outdated",
+    "clean": "powershell -Command \"if (Test-Path dist) { Remove-Item -Recurse -Force dist }; if (Test-Path .quasar) { Remove-Item -Recurse -Force .quasar }; if (Test-Path node_modules\\.cache) { Remove-Item -Recurse -Force node_modules\\.cache }\"",
+    "clean:all": "powershell -Command \"if (Test-Path dist) { Remove-Item -Recurse -Force dist }; if (Test-Path .quasar) { Remove-Item -Recurse -Force .quasar }; if (Test-Path node_modules) { Remove-Item -Recurse -Force node_modules }; if (Test-Path package-lock.json) { Remove-Item -Force package-lock.json }\""
   },
   "dependencies": {
     "@fontsource/montserrat": "^5.2.8",
@@ -34,8 +58,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.14.0",
-    "@intlify/unplugin-vue-i18n": "^2.0.0",
-    "@quasar/app-vite": "^2.0.0",
+    "@intlify/vue-i18n-loader": "^5.0.0",
+    "@quasar/app-webpack": "^4.3.1",
     "@types/node": "^22.0.0",
     "@vue/eslint-config-prettier": "^10.1.0",
     "autoprefixer": "^10.4.2",
@@ -45,8 +69,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^15.2.11",
     "postcss": "^8.4.14",
-    "prettier": "^3.3.3",
-    "vite-plugin-checker": "^0.8.0"
+    "prettier": "^3.3.3"
   },
   "lint-staged": {
     "*.{js,vue}": [

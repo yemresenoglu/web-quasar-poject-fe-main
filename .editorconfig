@@ -1,7 +1,50 @@
-[*.{js,jsx,mjs,cjs,ts,tsx,mts,cts,vue}]
+# EditorConfig - Enterprise Configuration
+# https://editorconfig.org
+
+root = true
+
+[*]
 charset = utf-8
-indent_size = 2
-indent_style = space
 end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
+
+[*.{js,jsx,mjs,cjs,ts,tsx,mts,cts,vue}]
+indent_size = 2
+indent_style = space
+max_line_length = 100
+
+[*.{json,yml,yaml}]
+indent_size = 2
+indent_style = space
+
+[*.md]
+trim_trailing_whitespace = false
+max_line_length = off
+
+[*.{html,xml}]
+indent_size = 2
+indent_style = space
+
+[*.{css,scss,sass,less}]
+indent_size = 2
+indent_style = space
+
+[*.{py,pyw}]
+indent_size = 4
+indent_style = space
+
+[*.{java,kt}]
+indent_size = 4
+indent_style = space
+
+[Makefile]
+indent_style = tab
+indent_size = 4
+
+[*.{bat,cmd}]
+end_of_line = crlf
+
+[*.sh]
+indent_size = 2
+indent_style = space

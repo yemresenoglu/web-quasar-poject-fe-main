@@ -38,7 +38,7 @@
           <q-card class="index-page__card">
             <q-card-section>
               <div class="text-subtitle2 index-page__logo-container">
-                <img src="src/assets/logo.png" alt="Sompo Sigorta Logo" class="index-page__logo" />
+                <img :src="logoUrl" alt="Sompo Sigorta Logo" class="index-page__logo" />
                 <span class="index-page__company-name"
                   >Sompo Sigorta | Sigortacılık Ürün ve Hizmetleri</span
                 >
@@ -248,6 +248,7 @@ import { ref, onMounted, onBeforeUnmount, defineAsyncComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { createLogger } from 'src/utils/logger.js'
 import { baseApi } from 'src/api/baseApi.js'
+import logoUrl from 'src/assets/logo.png'
 
 const DashboardCharts = defineAsyncComponent(() => import('src/components/DashboardCharts.vue'))
 
@@ -286,19 +287,19 @@ const updateDateTime = () => {
   })
 }
 
-const toggleAnnouncementExpand = (announcementId) => {
-  const announcement = announcementList.value.find((a) => a.id === announcementId)
+const toggleAnnouncementExpand = announcementId => {
+  const announcement = announcementList.value.find(a => a.id === announcementId)
   if (announcement) {
     announcement.expanded = !announcement.expanded
   }
 }
 
 const workflowApi = {
-  listWorkflowPoolCounts: async (data) =>
+  listWorkflowPoolCounts: async data =>
     baseApi.getClient().dispatch('listIsHavuzSayilari', data, {}),
-  getWorkflowTaskCountsList: async (data) =>
+  getWorkflowTaskCountsList: async data =>
     baseApi.getClient().dispatch('getIsakisIsSayilariListe', data, {}),
-  listAnnouncement: async (data) => baseApi.getClient().dispatch('listDurtme', data, {}),
+  listAnnouncement: async data => baseApi.getClient().dispatch('listDurtme', data, {}),
 }
 
 onMounted(async () => {
@@ -319,11 +320,11 @@ onMounted(async () => {
       let totalSent = 0
       let totalDesk = 0
 
-      processStats.value = taskCountResponseData.map((item) => {
+      processStats.value = taskCountResponseData.map(item => {
         const id = item[0]
         const name = item[3]
 
-        const getCount = (label) => {
+        const getCount = label => {
           const index = item.indexOf(label)
           if (index !== -1 && item[index + 1]) {
             return parseInt(item[index + 1].replace(':', '')) || 0
@@ -366,7 +367,7 @@ onMounted(async () => {
     const poolCountResponseData = poolCountResponse.data.data
 
     if (poolCountResponseData) {
-      jobPools.value = poolCountResponseData.map((item) => {
+      jobPools.value = poolCountResponseData.map(item => {
         const name = item[0] || ''
         const count = parseInt(item[1]) || 0
         const id = item[2] || ''
@@ -385,7 +386,7 @@ onMounted(async () => {
     const announcementListResponseData = announcementListResponse.data.data
 
     if (announcementListResponseData) {
-      announcementList.value = announcementListResponseData.map((item) => {
+      announcementList.value = announcementListResponseData.map(item => {
         console.log('Duyuru içeriği:', item.icerik)
 
         return {

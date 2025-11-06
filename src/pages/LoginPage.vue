@@ -3,7 +3,7 @@
     <div class="login-container">
       <div class="login-header">
         <div class="login-logo">
-          <img src="src/assets/logo.png" alt="Logo" class="login-logo-img" />
+          <img :src="logoUrl" alt="Logo" class="login-logo-img" />
         </div>
       </div>
       <div class="login-page__section">
@@ -23,7 +23,7 @@
                 :disable="loading"
                 @keyup.enter="handleLogin"
               >
-                <template v-slot:prepend>
+                <template #prepend>
                   <i class="bi bi-person"></i>
                 </template>
               </q-input>
@@ -39,10 +39,10 @@
                 :disable="loading"
                 @keyup.enter="handleLogin"
               >
-                <template v-slot:prepend>
+                <template #prepend>
                   <i class="bi bi-lock"></i>
                 </template>
-                <template v-slot:append>
+                <template #append>
                   <i
                     :class="showPassword ? 'bi bi-eye' : 'bi bi-eye-slash'"
                     class="cursor-pointer"
@@ -113,6 +113,7 @@ import { createLogger } from 'src/utils/logger.js'
 import { baseApi } from 'src/api/baseApi.js'
 import CaptchaImage from 'src/components/CaptchaImage.vue'
 import ForgotPasswordDialog from 'src/components/ForgotPasswordDialog.vue'
+import logoUrl from 'src/assets/logo.png'
 
 const router = useRouter()
 const $q = useQuasar()
@@ -129,8 +130,8 @@ const loading = computed(() => authLoading.value)
 const isFormValid = computed(() => loginForm.value.userCode && loginForm.value.password)
 
 const authApi = {
-  login: async (data) => baseApi.getClient().dispatch('login', data, {}),
-  getUserSessionInfo: async (data) => baseApi.getClient().dispatch('getUserSessionInfo', data, {}),
+  login: async data => baseApi.getClient().dispatch('login', data, {}),
+  getUserSessionInfo: async data => baseApi.getClient().dispatch('getUserSessionInfo', data, {}),
 }
 
 const generateCaptcha = () => captchaRef.value?.refreshCaptcha()
@@ -167,9 +168,9 @@ const handleLogin = async () => {
       })
       router.push('/home')
     },
-    { operation: 'login', userCode: loginForm.value.userCode },
+    { operation: 'login', userCode: loginForm.value.userCode }
   )
-    .catch((err) => {
+    .catch(err => {
       $q.notify({
         type: 'negative',
         message: err.message || t('login.errorMessage'),
@@ -419,19 +420,32 @@ const clearAllStorage = () => {
 
 .captcha-field-wrapper {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
   width: 100%;
+  flex-wrap: wrap;
 }
 
 .captcha-image-section {
-  flex: 2;
-  min-width: 180px;
+  flex: 3;
+  min-width: 220px;
+  max-width: none;
+  flex-shrink: 0;
 }
 
 .captcha-input {
-  flex: 2;
-  max-width: 150px;
+  flex: 1;
+  min-width: 100px;
+  max-width: 140px;
+  flex-grow: 0;
+
+  :deep(.q-field) {
+    max-width: 140px;
+  }
+
+  :deep(.q-field__control) {
+    max-width: 140px;
+  }
 }
 
 .login-page__forgot-password-btn {
@@ -548,13 +562,21 @@ const clearAllStorage = () => {
     height: 48px;
   }
 
-  .captcha-display {
-    padding: 4px 6px;
+  .captcha-field-wrapper {
+    flex-direction: column;
+    gap: 8px;
   }
 
-  .captcha-text {
-    font-size: 10px;
-    letter-spacing: 1px;
+  .captcha-image-section {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+  }
+
+  .captcha-input {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
   }
 
   .login-form {

@@ -1,4 +1,4 @@
-# 🚀 SOMPO Sigorta - Hasar Yönetim Sistemi
+# 🚀 SOMPO Harici Avukat ve Arabulucu Uygulaması
 
 **Modern Web Application**  
 Hasar yönetimi ve arabuluculuk süreçleri için geliştirilmiş web uygulaması.
@@ -625,7 +625,7 @@ VUE_APP_LOG_LEVEL=error
 ## 📞 Destek
 
 ### İletişim
-- **Proje:** SOMPO Hasar Operasyon Yönetim Sistemi
+- **Proje:** SOMPO Harici Avukat ve Arabulucu Uygulaması
 - **Versiyon:** 0.0.1
 - **License:** Private
 

@@ -23,13 +23,7 @@
               @keydown.enter="navigateToIndex"
               @keydown.space.prevent="navigateToIndex"
             >
-              <img
-                src="/src/assets/logo.png"
-                alt="SOMPO Logo"
-                width="24"
-                height="24"
-                loading="lazy"
-              />
+              <img :src="logoUrl" alt="SOMPO Logo" width="24" height="24" loading="lazy" />
               <q-tooltip :anchor="tooltipAnchor" :self="tooltipSelf" :offset="tooltipOffset">
                 {{ $t('taskbar.start') }}
               </q-tooltip>
@@ -154,6 +148,7 @@
 import { defineAsyncComponent, computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 // Store imports removed - using local state instead
+import logoUrl from 'src/assets/logo.png'
 
 const AccountMenu = defineAsyncComponent(() => import('./account/AccountMenu.vue'))
 
@@ -164,12 +159,6 @@ const props = defineProps({
   modelValue: {
     type: Boolean,
     required: true,
-  },
-  taskbarSettings: {
-    type: Object,
-    default: () => ({
-      autoHide: true,
-    }),
   },
 })
 
@@ -229,15 +218,15 @@ const navigateToMenu = () => {
   router.push('/home/menu')
 }
 
-const navigateToHasarSorgula = () => {
+const _navigateToHasarSorgula = () => {
   router.push('/menu/hasar-sorgula-arabulucu')
 }
 
-const navigateToHasarDosya = () => {
+const _navigateToHasarDosya = () => {
   router.push('/menu/hasar-dosya-arabulucu')
 }
 
-const navigateToRoute = (item) => {
+const navigateToRoute = item => {
   if (!item.route) return
   router.push(item.route)
 }

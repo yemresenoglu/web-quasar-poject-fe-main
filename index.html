@@ -1,15 +1,20 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
   <head>
-    <title>SOMPO Sigorta</title>
-
     <meta charset="utf-8">
-    <meta name="description" content="SOMPO Sigorta - Hasar Yönetim Sistemi">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width<% if (ctx.mode.cordova || ctx.mode.capacitor) { %>, viewport-fit=cover<% } %>">
+    
+    <title>SOMPO Harici Avukat ve Arabulucu Uygulaması</title>
+    
+    <meta name="description" content="Hasar Yönetim Sistemi - Arabuluculuk ve Hasar Dosya Yönetimi">
+    <meta name="keywords" content="sompo, sigorta, hasar, arabulucu, avukat, yönetim">
+    <meta name="author" content="SOMPO Sigorta">
+    <meta name="robots" content="noindex, nofollow">
     <meta name="format-detection" content="telephone=no">
     <meta name="msapplication-tap-highlight" content="no">
-    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width<% if (ctx.mode.cordova || ctx.mode.capacitor) { %>, viewport-fit=cover<% } %>">
-
-    <!-- Content Security Policy for Production -->
+    <meta name="theme-color" content="#3b82f6">
+    
     <% if (ctx.mode.pwa && ctx.prod) { %>
     <meta http-equiv="Content-Security-Policy" 
           content="default-src 'self'; 
@@ -18,7 +23,15 @@
                    font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com data:; 
                    img-src 'self' data: https: blob:; 
                    connect-src 'self' https://api.sompo.com.tr;
-                   worker-src 'self' blob:;">
+                   worker-src 'self' blob:;
+                   frame-ancestors 'none';
+                   base-uri 'self';
+                   form-action 'self';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
     <% } %>
 
     <link rel="icon" type="image/png" sizes="128x128" href="icons/favicon-128x128.png">
@@ -27,14 +40,14 @@
     <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
     <link rel="icon" type="image/ico" href="favicon.ico">
     <link rel="apple-touch-icon" href="icons/favicon-128x128.png">
-    <meta name="theme-color" content="#1976d2">
     
-    <!-- Material Icons Font - Quasar Notifications için -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    
-    <!-- Bootstrap Icons CSS - CSS dosyasında import ediliyor -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   </head>
   <body>
     <!-- quasar:entry-point -->
+    <noscript>
+      <strong>JavaScript gereklidir. Lütfen tarayıcınızda JavaScript'i etkinleştirin.</strong>
+    </noscript>
   </body>
 </html>

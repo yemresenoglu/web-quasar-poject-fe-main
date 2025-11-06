@@ -15,15 +15,24 @@ dist
 
 # Test coverage
 coverage
-
-# Sass indented syntax (prettier doesn't support .sass)
-*.sass
+.nyc_output
 
 # Generated files
 *.min.js
 *.min.css
-package-lock.json
+*.bundle.js
+*.chunk.js
 
 # Logs
 *.log
 
+# Sass indented syntax (prettier doesn't support .sass)
+*.sass
+
+# Lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Config files that should not be formatted
+*.config.js.map

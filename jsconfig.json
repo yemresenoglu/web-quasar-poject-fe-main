@@ -3,17 +3,17 @@
     "baseUrl": ".",
     "paths": {
       "src/*": ["src/*"],
-      "app/*": ["*"],
-      "components/*": ["src/components/*"],
       "layouts/*": ["src/layouts/*"],
       "pages/*": ["src/pages/*"],
-      "assets/*": ["src/assets/*"],
+      "components/*": ["src/components/*"],
+      "stores/*": ["src/stores/*"],
+      "utils/*": ["src/utils/*"],
       "boot/*": ["src/boot/*"]
     },
     "target": "esnext",
     "module": "esnext",
     "moduleResolution": "bundler",
-    "lib": ["esnext", "dom"],
+    "lib": ["esnext", "dom", "dom.iterable"],
     "jsx": "preserve",
     "allowJs": true,
     "checkJs": false,
@@ -24,19 +24,19 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "strict": false
+    "strict": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noImplicitReturns": false,
+    "noFallthroughCasesInSwitch": true
   },
   "vueCompilerOptions": {
     "target": 3.4,
     "extensions": [".vue"],
-    "globalTypesPath": "./node_modules/@quasar/app-vite/types"
+    "globalTypesPath": "./node_modules/@quasar/app-webpack/types"
   },
   "include": [
     "src/**/*",
-    "src-capacitor/**/*",
-    "src-cordova/**/*",
-    "src-electron/**/*",
-    "src-pwa/**/*",
     ".quasar/**/*",
     "quasar.config.js"
   ],
@@ -44,9 +44,8 @@
     "node_modules",
     "dist",
     ".quasar",
-    "src-capacitor/node_modules",
-    "src-cordova/node_modules",
-    "src-electron/node_modules",
-    "src-pwa/node_modules"
+    "coverage",
+    "**/*.test.js",
+    "**/*.spec.js"
   ]
 }

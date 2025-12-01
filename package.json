@@ -42,7 +42,7 @@
   "dependencies": {
     "@fontsource/montserrat": "^5.2.8",
     "@quasar/extras": "^1.17.0",
-    "@vueuse/integrations": "^13.5.0",
+    "@vueuse/integrations": "^14.1.0",
     "axios": "^1.2.1",
     "bootstrap-icons": "^1.13.1",
     "chart.js": "^4.4.7",
